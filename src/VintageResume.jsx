@@ -13,9 +13,55 @@ import {
   Terminal,
 } from 'lucide-react';
 
+const experience = [
+  {
+    title: 'Infrastructure Engineer II',
+    organization: 'Kotak Mahindra Bank, Thane',
+    start: { year: 2024, month: 9 },
+    summary: 'SME for VMware Tanzu/Cloud Foundry. Enforced RBAC, embedded compliance controls, and led automated operational strategies.',
+  },
+  {
+    title: 'Platform Engineer',
+    organization: 'Voya India (formerly VFI SLK), Pune',
+    start: { year: 2022, month: 11 },
+    end: { year: 2024, month: 9 },
+    summary: 'Administered OpenShift & ARO clusters. Automated secure Azure cloud infrastructure using Terraform and PowerShell.',
+  },
+  {
+    title: 'Consultant',
+    organization: 'Capgemini, Pune',
+    start: { year: 2018, month: 9 },
+    end: { year: 2022, month: 11 },
+    summary: 'Administered Pivotal Cloud Foundry on AWS. Executed platform upgrades, compliance scaling, and Wavefront monitoring.',
+  },
+];
+
+const formatMonthYear = ({ year, month }) =>
+  new Intl.DateTimeFormat('en', { month: 'short', year: 'numeric' }).format(new Date(year, month));
+
+const getMonthDifference = (start, end = new Date()) =>
+  Math.max(0, (end.getFullYear() - start.year) * 12 + (end.getMonth() - start.month));
+
+const formatDuration = (months) => {
+  const years = Math.floor(months / 12);
+  const remainingMonths = months % 12;
+  const parts = [];
+
+  if (years) parts.push(`${years} yr${years === 1 ? '' : 's'}`);
+  if (remainingMonths) parts.push(`${remainingMonths} mo${remainingMonths === 1 ? '' : 's'}`);
+
+  return parts.join(' ') || 'Less than a month';
+};
+
 const VintageResume = () => {
   const [parallaxOffset, setParallaxOffset] = useState({ x: 0, y: 0 });
   const headerRef = useRef(null);
+  const totalExperience = formatDuration(
+    experience.reduce(
+      (totalMonths, role) => totalMonths + getMonthDifference(role.start, role.end && new Date(role.end.year, role.end.month)),
+      0,
+    ),
+  );
 
   const updateParallaxOffset = (clientX, clientY) => {
     if (!headerRef.current) return;
@@ -67,8 +113,28 @@ const VintageResume = () => {
         }}
       />
 
+      <nav
+        aria-label="Resume sections"
+        className="fixed inset-x-0 top-0 z-30 border-b border-black/10 bg-[#f2efe9]/95 backdrop-blur"
+      >
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-4 sm:px-6 lg:px-8">
+          <a href="#about" className="text-xs font-bold tracking-widest hover:text-yellow-600 transition-colors" style={{ color: '#222222' }}>
+            ABOUT
+          </a>
+          <a href="#experience" className="text-xs font-bold tracking-widest hover:text-yellow-600 transition-colors" style={{ color: '#222222' }}>
+            EXPERIENCE
+          </a>
+          <a href="#skills" className="text-xs font-bold tracking-widest hover:text-yellow-600 transition-colors" style={{ color: '#222222' }}>
+            SKILLS
+          </a>
+          <a href="#architecture" className="text-xs font-bold tracking-widest hover:text-yellow-600 transition-colors" style={{ color: '#222222' }}>
+            ARCHITECTURE
+          </a>
+        </div>
+      </nav>
+
       {/* Main Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 pt-24 pb-6 sm:px-6 sm:pt-28 sm:pb-12 lg:px-8">
         {/* Header with Parallax (mouse only — improvement #1: no jank on touch) */}
         <header
           ref={headerRef}
@@ -122,18 +188,6 @@ const VintageResume = () => {
                 >
                   PLATFORM &bull; CLOUD &bull; DEVOPS &bull; INFRASTRUCTURE
                 </div>
-
-                {/* Monogram */}
-                <p
-                  className="relative z-20 text-7xl sm:text-8xl lg:text-9xl font-bold transition-transform duration-300 group-hover:scale-105"
-                  style={{
-                    color: '#d4af37',
-                    fontFamily: 'Georgia, serif',
-                    letterSpacing: '0.05em',
-                  }}
-                >
-                  MS
-                </p>
               </div>
 
               {/* Role strip */}
@@ -151,7 +205,7 @@ const VintageResume = () => {
           {/* Right: Bio & Contact */}
           <div className="flex flex-col justify-between space-y-6 sm:space-y-8 animate-fadeIn">
             {/* Bio */}
-            <div>
+            <div id="about" className="scroll-mt-24">
               <h2 className="text-sm font-bold tracking-widest mb-4" style={{ color: '#222222' }}>
                 ABOUT
               </h2>
@@ -211,52 +265,93 @@ const VintageResume = () => {
           </div>
         </section>
 
+        <section
+          aria-label="Operational highlights"
+          className="mb-12 grid grid-cols-1 gap-4 sm:mb-16 sm:grid-cols-3"
+        >
+          <article
+            className="rounded-lg border p-5 shadow-sm backdrop-blur-sm"
+            style={{
+              backgroundColor: 'rgba(255, 255, 255, 0.38)',
+              borderColor: 'rgba(212, 175, 55, 0.45)',
+            }}
+          >
+            <p className="text-3xl font-bold font-serif" style={{ color: '#d4af37' }}>{totalExperience}</p>
+            <h2 className="mt-2 text-sm font-bold tracking-widest uppercase" style={{ color: '#222222' }}>
+              Total Experience
+            </h2>
+            <p className="mt-2 text-sm leading-relaxed" style={{ color: '#444444' }}>
+              Platform Engineering &amp; Cloud Infrastructure
+            </p>
+          </article>
+          <article
+            className="rounded-lg border p-5 shadow-sm backdrop-blur-sm"
+            style={{
+              backgroundColor: 'rgba(255, 255, 255, 0.38)',
+              borderColor: 'rgba(212, 175, 55, 0.45)',
+            }}
+          >
+            <p className="text-3xl font-bold font-serif" style={{ color: '#d4af37' }}>3</p>
+            <h2 className="mt-2 text-sm font-bold tracking-widest uppercase" style={{ color: '#222222' }}>
+              Major Platforms
+            </h2>
+            <p className="mt-2 text-sm leading-relaxed" style={{ color: '#444444' }}>
+              OpenShift, ARO, Tanzu &amp; Cloud Foundry
+            </p>
+          </article>
+          <article
+            className="rounded-lg border p-5 shadow-sm backdrop-blur-sm"
+            style={{
+              backgroundColor: 'rgba(255, 255, 255, 0.38)',
+              borderColor: 'rgba(212, 175, 55, 0.45)',
+            }}
+          >
+            <p className="text-3xl font-bold font-serif" style={{ color: '#d4af37' }}>Multi-Cloud</p>
+            <h2 className="mt-2 text-sm font-bold tracking-widest uppercase" style={{ color: '#222222' }}>
+              Infrastructure Scope
+            </h2>
+            <p className="mt-2 text-sm leading-relaxed" style={{ color: '#444444' }}>
+              Azure &amp; AWS Infrastructure Provisioning
+            </p>
+          </article>
+        </section>
+
         {/* Body: 2-Column Grid */}
         <section className="grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-12 lg:gap-16">
           {/* Left Column: Education, Work, Languages */}
           <div className="space-y-12 sm:space-y-16">
             {/* Work Experience */}
-            <article className="animate-fadeInUp" style={{ animationDelay: '0.1s' }}>
+            <article id="experience" className="animate-fadeInUp scroll-mt-24" style={{ animationDelay: '0.1s' }}>
               <h2 className="text-sm font-bold tracking-widest mb-6 uppercase" style={{ color: '#222222' }}>
                 Work Experience
               </h2>
               <div className="space-y-6 border-l-2 border-gray-300 pl-6">
-                <div>
-                  <h3 className="font-bold text-lg" style={{ color: '#222222' }}>
-                    Infrastructure Engineer II
-                  </h3>
-                  <p className="text-sm" style={{ color: '#888888' }}>
-                    Kotak Mahindra Bank, Thane &middot; Oct 2024 - Jul 2026
-                  </p>
-                  <p className="text-sm mt-2" style={{ color: '#444444' }}>
-                    SME for VMware Tanzu/Cloud Foundry. Enforced RBAC, embedded compliance controls,
-                    and led automated operational strategies.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="font-bold text-lg" style={{ color: '#222222' }}>
-                    Platform Engineer
-                  </h3>
-                  <p className="text-sm" style={{ color: '#888888' }}>
-                    Voya India (formerly VFI SLK), Pune &middot; Dec 2022 - Oct 2024
-                  </p>
-                  <p className="text-sm mt-2" style={{ color: '#444444' }}>
-                    Administered OpenShift &amp; ARO clusters. Automated secure Azure cloud
-                    infrastructure using Terraform and PowerShell.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="font-bold text-lg" style={{ color: '#222222' }}>
-                    Consultant
-                  </h3>
-                  <p className="text-sm" style={{ color: '#888888' }}>
-                    Capgemini, Pune &middot; Oct 2018 - Dec 2022
-                  </p>
-                  <p className="text-sm mt-2" style={{ color: '#444444' }}>
-                    Administered Pivotal Cloud Foundry on AWS. Executed platform upgrades, compliance
-                    scaling, and Wavefront monitoring.
-                  </p>
-                </div>
+                {experience.map((role) => {
+                  const endDate = role.end && new Date(role.end.year, role.end.month);
+                  const tenure = formatDuration(getMonthDifference(role.start, endDate));
+
+                  return (
+                    <div key={`${role.organization}-${role.title}`}>
+                      <h3 className="font-bold text-lg" style={{ color: '#222222' }}>
+                        {role.title}
+                      </h3>
+                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm" style={{ color: '#888888' }}>
+                        <span>
+                          {role.organization} &middot; {formatMonthYear(role.start)} - {role.end ? formatMonthYear(role.end) : 'Present'}
+                        </span>
+                        <span
+                          className="rounded-full border px-2 py-0.5 text-xs font-bold"
+                          style={{ borderColor: 'rgba(212, 175, 55, 0.6)', color: '#9a7711' }}
+                        >
+                          {tenure}
+                        </span>
+                      </div>
+                      <p className="text-sm mt-2" style={{ color: '#444444' }}>
+                        {role.summary}
+                      </p>
+                    </div>
+                  );
+                })}
               </div>
             </article>
 
@@ -278,12 +373,71 @@ const VintageResume = () => {
                   <h3 className="font-bold text-lg" style={{ color: '#222222' }}>
                     Certifications
                   </h3>
-                  <p className="text-sm mt-2" style={{ color: '#444444' }}>
-                    &bull; Certified Kubernetes Administrator (CKA) - In Progress<br />
-                    &bull; AWS Solutions Architect Associate (2019)<br />
-                    &bull; ITIL 4 Foundation (2024)<br />
-                    &bull; Redhat Container Administration
-                  </p>
+                  <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                    <article
+                      className="rounded-lg border p-4"
+                      style={{ backgroundColor: 'rgba(255, 255, 255, 0.32)', borderColor: 'rgba(34, 34, 34, 0.15)' }}
+                    >
+                      <p className="text-xs font-bold tracking-widest uppercase" style={{ color: '#9a7711' }}>
+                        In Progress
+                      </p>
+                      <h4 className="mt-2 font-bold" style={{ color: '#222222' }}>
+                        Certified Kubernetes Administrator
+                      </h4>
+                      <p className="mt-1 text-xs" style={{ color: '#888888' }}>CKA</p>
+                    </article>
+                    <article
+                      className="rounded-lg border p-4"
+                      style={{ backgroundColor: 'rgba(255, 255, 255, 0.45)', borderColor: 'rgba(212, 175, 55, 0.5)' }}
+                    >
+                      <p className="text-xs font-bold tracking-widest uppercase" style={{ color: '#9a7711' }}>
+                        Completed &middot; 2019
+                      </p>
+                      <h4 className="mt-2 font-bold" style={{ color: '#222222' }}>
+                        AWS Solutions Architect Associate
+                      </h4>
+                      <a
+                        href="https://cp.certmetrics.com/amazon/en/public/verify/credential"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-3 inline-block text-xs font-bold underline underline-offset-4 hover:text-yellow-600"
+                        style={{ color: '#444444' }}
+                      >
+                        Validate with AWS
+                      </a>
+                    </article>
+                    <article
+                      className="rounded-lg border p-4"
+                      style={{ backgroundColor: 'rgba(255, 255, 255, 0.45)', borderColor: 'rgba(212, 175, 55, 0.5)' }}
+                    >
+                      <p className="text-xs font-bold tracking-widest uppercase" style={{ color: '#9a7711' }}>
+                        Completed &middot; 2024
+                      </p>
+                      <h4 className="mt-2 font-bold" style={{ color: '#222222' }}>
+                        ITIL 4 Foundation
+                      </h4>
+                      <a
+                        href="https://www.credly.com/org/peoplecert/badge/itil-4-foundation"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-3 inline-block text-xs font-bold underline underline-offset-4 hover:text-yellow-600"
+                        style={{ color: '#444444' }}
+                      >
+                        View on Credly
+                      </a>
+                    </article>
+                    <article
+                      className="rounded-lg border p-4"
+                      style={{ backgroundColor: 'rgba(255, 255, 255, 0.32)', borderColor: 'rgba(34, 34, 34, 0.15)' }}
+                    >
+                      <p className="text-xs font-bold tracking-widest uppercase" style={{ color: '#888888' }}>
+                        Professional Training
+                      </p>
+                      <h4 className="mt-2 font-bold" style={{ color: '#222222' }}>
+                        Red Hat Container Administration
+                      </h4>
+                    </article>
+                  </div>
                 </div>
               </div>
             </article>
@@ -313,7 +467,7 @@ const VintageResume = () => {
           {/* Right Column: Skills & Tools */}
           <div className="space-y-12 sm:space-y-16">
             {/* Core Skills */}
-            <section className="animate-fadeInUp" style={{ animationDelay: '0.4s' }}>
+            <section id="skills" className="animate-fadeInUp scroll-mt-24" style={{ animationDelay: '0.4s' }}>
               <h2 className="text-sm font-bold tracking-widest mb-8 uppercase" style={{ color: '#222222' }}>
                 Core Competencies
               </h2>
@@ -347,7 +501,7 @@ const VintageResume = () => {
             </section>
 
             {/* Tools Bento Grid */}
-            <section className="animate-fadeInUp" style={{ animationDelay: '0.5s' }}>
+            <section id="architecture" className="animate-fadeInUp scroll-mt-24" style={{ animationDelay: '0.5s' }}>
               <h2 className="text-sm font-bold tracking-widest mb-8 uppercase" style={{ color: '#222222' }}>
                 Tools &amp; Platforms
               </h2>
