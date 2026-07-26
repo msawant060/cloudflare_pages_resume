@@ -2,7 +2,6 @@ import React, { useState, useRef } from 'react';
 
 const VintageResume = () => {
   const [parallaxOffset, setParallaxOffset] = useState({ x: 0, y: 0 });
-  const [qrScanning, setQrScanning] = useState(false);
   const headerRef = useRef(null);
 
   // Handle parallax effect on header
@@ -145,40 +144,19 @@ const VintageResume = () => {
               <div className="space-y-2 text-sm" style={{ color: '#444444' }}>
                 <p>📧 msawant060@gmail.com</p>
                 <p>📱 +91 8928283513</p>
-                <p>🌐 linkedin.com/in/mihir-sawant-b646b012b</p>
+                <p>
+                  🌐{' '}
+                  <a
+                    href="https://www.linkedin.com/in/mihir-sawant-b646b012b"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline hover:text-yellow-600"
+                  >
+                    linkedin.com/in/mihir-sawant-b646b012b
+                  </a>
+                </p>
                 <p>📍 Pune, Maharashtra, India</p>
               </div>
-            </div>
-
-            {/* Interactive QR Code */}
-            <div className="flex flex-col items-center justify-center p-8 border-2 border-dashed rounded-lg group cursor-pointer" style={{ borderColor: '#222222', backgroundColor: 'rgba(34, 34, 34, 0.02)' }}>
-              <div
-                className="relative w-32 h-32 mb-4 group-hover:scale-110 transition-transform duration-300"
-                onClick={() => setQrScanning(!qrScanning)}
-              >
-                {/* QR Code Placeholder */}
-                <div
-                  className="w-full h-full flex items-center justify-center font-mono text-2xl font-bold rounded-lg"
-                  style={{ backgroundColor: '#222222', color: '#f2efe9' }}
-                >
-                  QR
-                </div>
-
-                {/* Scan Animation */}
-                <div
-                  className="absolute inset-0 animate-scan"
-                  style={{
-                    background: 'linear-gradient(to bottom, transparent, rgba(212, 175, 55, 0.4), transparent)',
-                    animation: 'scan 2s infinite',
-                  }}
-                />
-              </div>
-              <p className="text-xs font-bold tracking-widest" style={{ color: '#222222' }}>
-                SCAN FOR DETAILS
-              </p>
-              <p className="text-xs mt-2" style={{ color: '#888888' }}>
-                {qrScanning ? 'Scanning...' : 'Click to scan'}
-              </p>
             </div>
           </div>
         </section>
@@ -388,25 +366,12 @@ const VintageResume = () => {
           }
         }
 
-        @keyframes scan {
-          0% {
-            transform: translateY(-100%);
-          }
-          100% {
-            transform: translateY(100%);
-          }
-        }
-
         .animate-fadeIn {
           animation: fadeIn 0.8s ease-out;
         }
 
         .animate-fadeInUp {
           animation: fadeInUp 0.6s ease-out;
-        }
-
-        .animate-scan {
-          animation: scan 2s infinite;
         }
 
         /* Serif font fallback */
