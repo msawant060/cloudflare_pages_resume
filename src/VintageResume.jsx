@@ -522,7 +522,11 @@ const VintageResume = () => {
                   <div className="mt-3 grid gap-3 sm:grid-cols-2">
                     <article
                       className="rounded-lg border p-4"
-                      style={{ backgroundColor: 'rgba(255, 255, 255, 0.32)', borderColor: 'rgba(34, 34, 34, 0.15)' }}
+                      style={{
+                        ...getTileParallaxStyle(0.65),
+                        backgroundColor: 'rgba(255, 255, 255, 0.32)',
+                        borderColor: 'rgba(34, 34, 34, 0.15)',
+                      }}
                     >
                       <p className="text-xs font-bold tracking-widest uppercase" style={{ color: '#9a7711' }}>
                         In Progress
@@ -534,7 +538,11 @@ const VintageResume = () => {
                     </article>
                     <article
                       className="rounded-lg border p-4"
-                      style={{ backgroundColor: 'rgba(255, 255, 255, 0.45)', borderColor: 'rgba(212, 175, 55, 0.5)' }}
+                      style={{
+                        ...getTileParallaxStyle(0.85),
+                        backgroundColor: 'rgba(255, 255, 255, 0.45)',
+                        borderColor: 'rgba(212, 175, 55, 0.5)',
+                      }}
                     >
                       <p className="text-xs font-bold tracking-widest uppercase" style={{ color: '#9a7711' }}>
                         Completed &middot; 2019
@@ -554,7 +562,11 @@ const VintageResume = () => {
                     </article>
                     <article
                       className="rounded-lg border p-4"
-                      style={{ backgroundColor: 'rgba(255, 255, 255, 0.45)', borderColor: 'rgba(212, 175, 55, 0.5)' }}
+                      style={{
+                        ...getTileParallaxStyle(1.05),
+                        backgroundColor: 'rgba(255, 255, 255, 0.45)',
+                        borderColor: 'rgba(212, 175, 55, 0.5)',
+                      }}
                     >
                       <p className="text-xs font-bold tracking-widest uppercase" style={{ color: '#9a7711' }}>
                         Completed &middot; 2024
@@ -574,7 +586,11 @@ const VintageResume = () => {
                     </article>
                     <article
                       className="rounded-lg border p-4"
-                      style={{ backgroundColor: 'rgba(255, 255, 255, 0.32)', borderColor: 'rgba(34, 34, 34, 0.15)' }}
+                      style={{
+                        ...getTileParallaxStyle(0.75),
+                        backgroundColor: 'rgba(255, 255, 255, 0.32)',
+                        borderColor: 'rgba(34, 34, 34, 0.15)',
+                      }}
                     >
                       <p className="text-xs font-bold tracking-widest uppercase" style={{ color: '#888888' }}>
                         Professional Training
