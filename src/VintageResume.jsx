@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Mail,
   Phone,
@@ -25,7 +25,7 @@ const experience = [
     organization: 'Voya India (formerly VFI SLK), Pune',
     start: { year: 2022, month: 11 },
     end: { year: 2024, month: 9 },
-    summary: 'Administered OpenShift & ARO clusters. Automated secure Azure cloud infrastructure using Terraform and PowerShell.',
+    summary: 'Supported OpenShift & ARO cluster operations at Voya India for approximately one year before transitioning focus to Kubernetes. Automated Azure cloud infrastructure using Terraform and PowerShell.',
   },
   {
     title: 'Consultant',
@@ -53,8 +53,16 @@ const formatDuration = (months) => {
   return parts.join(' ') || 'Less than a month';
 };
 
+const MAX_MOTION_OFFSET = 20;
+
+const clampOffset = (value) =>
+  Math.max(-MAX_MOTION_OFFSET, Math.min(MAX_MOTION_OFFSET, value));
+
 const VintageResume = () => {
   const [parallaxOffset, setParallaxOffset] = useState({ x: 0, y: 0 });
+  const [motionPermissionRequired, setMotionPermissionRequired] = useState(false);
+  const [motionEnabled, setMotionEnabled] = useState(false);
+  const [motionError, setMotionError] = useState('');
   const headerRef = useRef(null);
   const totalExperience = formatDuration(
     experience.reduce(
@@ -63,12 +71,15 @@ const VintageResume = () => {
     ),
   );
 
+  const getLayerTransform = (depth) =>
+    `translate3d(${parallaxOffset.x * depth}px, ${parallaxOffset.y * depth}px, 0)`;
+
   const updateParallaxOffset = (clientX, clientY) => {
     if (!headerRef.current) return;
     const rect = headerRef.current.getBoundingClientRect();
-    const x = (clientX - rect.left) / rect.width - 0.5;
-    const y = (clientY - rect.top) / rect.height - 0.5;
-    setParallaxOffset({ x: x * 10, y: y * 10 });
+    const x = ((clientX - rect.left) / rect.width - 0.5) * MAX_MOTION_OFFSET;
+    const y = ((clientY - rect.top) / rect.height - 0.5) * MAX_MOTION_OFFSET;
+    setParallaxOffset({ x: clampOffset(x), y: clampOffset(y) });
   };
 
   const handleMouseMove = (e) => {
@@ -79,10 +90,50 @@ const VintageResume = () => {
     setParallaxOffset({ x: 0, y: 0 });
   };
 
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.DeviceOrientationEvent) return undefined;
+
+    const requiresPermission = typeof window.DeviceOrientationEvent.requestPermission === 'function';
+    setMotionPermissionRequired(requiresPermission);
+
+    if (requiresPermission && !motionEnabled) return undefined;
+
+    const handleOrientation = (event) => {
+      if (typeof event.beta !== 'number' || typeof event.gamma !== 'number') return;
+
+      setParallaxOffset({
+        x: clampOffset((event.gamma / 90) * MAX_MOTION_OFFSET),
+        y: clampOffset((event.beta / 180) * MAX_MOTION_OFFSET),
+      });
+    };
+
+    window.addEventListener('deviceorientation', handleOrientation);
+    return () => window.removeEventListener('deviceorientation', handleOrientation);
+  }, [motionEnabled]);
+
+  const enableMotionEffects = async () => {
+    if (typeof window === 'undefined' || !window.DeviceOrientationEvent) return;
+
+    try {
+      if (typeof window.DeviceOrientationEvent.requestPermission === 'function') {
+        const permission = await window.DeviceOrientationEvent.requestPermission();
+        if (permission !== 'granted') {
+          setMotionError('Motion permission was not granted.');
+          return;
+        }
+      }
+
+      setMotionError('');
+      setMotionEnabled(true);
+    } catch {
+      setMotionError('Motion effects could not be enabled.');
+    }
+  };
+
   // Core competencies are presented as areas of practice, not subjective scores.
   const skills = [
     'Platform Engineering',
-    'Kubernetes/OpenShift',
+    'Kubernetes Transition & OpenShift',
     'Cloud Infrastructure',
     'Infrastructure as Code',
     'Observability',
@@ -93,14 +144,14 @@ const VintageResume = () => {
   const tools = [
     {
       name: 'OpenShift & ARO',
-      metricValue: '3.5+ Yrs',
-      source: 'Production experience at Voya India & Kotak Mahindra Bank',
+      metricValue: '~1 Yr',
+      source: 'Production operations at Voya India during platform transition',
       Icon: Container,
     },
     {
       name: 'Kubernetes',
-      metricValue: 'CKA Track',
-      source: 'Certified Kubernetes Administrator - In Progress',
+      metricValue: 'Transitioning',
+      source: 'Certified Kubernetes Administrator track - In Progress',
       Icon: Ship,
     },
     {
@@ -140,6 +191,9 @@ const VintageResume = () => {
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
           backgroundSize: '200px 200px',
+          transform: getLayerTransform(0.5),
+          transition: 'transform 0.15s ease-out',
+          willChange: 'transform',
         }}
       />
 
@@ -165,33 +219,62 @@ const VintageResume = () => {
 
       {/* Main Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 pt-24 pb-6 sm:px-6 sm:pt-28 sm:pb-12 lg:px-8">
-        {/* Header with Parallax (mouse only — improvement #1: no jank on touch) */}
+        {/* Layered parallax header */}
         <header
           ref={headerRef}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
           className="mb-10 sm:mb-16 relative"
         >
-          <div
-            className="transition-transform duration-300 ease-out"
+          <h1
+            className="text-4xl sm:text-7xl lg:text-9xl break-words font-serif font-bold tracking-tight leading-none"
             style={{
-              transform: `translate(${parallaxOffset.x}px, ${parallaxOffset.y}px)`,
+              color: '#222222',
+              letterSpacing: '0.05em',
+              transform: getLayerTransform(1),
+              transition: 'transform 0.15s ease-out',
+              willChange: 'transform',
             }}
           >
-            <h1
-              className="text-4xl sm:text-7xl lg:text-9xl break-words font-serif font-bold tracking-tight leading-none"
-              style={{ color: '#222222', letterSpacing: '0.05em' }}
-            >
-              Mihir Sawant
-            </h1>
-            <p
-              className="mt-3 text-sm sm:text-lg tracking-widest uppercase"
-              style={{ color: '#888888' }}
-            >
-              Platform Engineering &middot; Kubernetes &amp; Cloud Infrastructure
-            </p>
-            <div className="h-1 w-24 sm:w-32 mt-4" style={{ backgroundColor: '#d4af37' }} />
+            Mihir Sawant
+          </h1>
+          <p
+            className="mt-3 text-sm sm:text-lg tracking-widest uppercase"
+            style={{ color: '#888888' }}
+          >
+            Platform Engineering &middot; Cloud Infrastructure &amp; Kubernetes Transition
+          </p>
+          <div className="h-1 w-24 sm:w-32 mt-4" style={{ backgroundColor: '#d4af37' }} />
+          <div
+            className="mt-5 inline-flex items-center rounded-full border px-3 py-1.5 text-xs font-bold tracking-widest"
+            style={{
+              backgroundColor: 'rgba(212, 175, 55, 0.12)',
+              borderColor: 'rgba(212, 175, 55, 0.65)',
+              color: '#222222',
+              transform: getLayerTransform(1.5),
+              transition: 'transform 0.15s ease-out',
+              willChange: 'transform',
+            }}
+          >
+            CKA IN PROGRESS
           </div>
+          {motionPermissionRequired && !motionEnabled && (
+            <div className="mt-4">
+              <button
+                type="button"
+                onClick={enableMotionEffects}
+                className="rounded border px-3 py-1.5 text-xs font-bold tracking-wide transition-colors hover:bg-[#d4af37]/15"
+                style={{ borderColor: 'rgba(34, 34, 34, 0.25)', color: '#444444' }}
+              >
+                Enable Motion Effects
+              </button>
+              {motionError && (
+                <p className="mt-2 text-xs" style={{ color: '#888888' }}>
+                  {motionError}
+                </p>
+              )}
+            </div>
+          )}
         </header>
 
         {/* Hero Section */}
@@ -214,7 +297,12 @@ const VintageResume = () => {
                 {/* Faded Typography Background */}
                 <div
                   className="absolute inset-0 z-10 opacity-[0.2] text-gray-100 font-serif text-2xl sm:text-3xl overflow-hidden pointer-events-none flex items-center justify-center text-center px-6"
-                  style={{ lineHeight: '1.8' }}
+                  style={{
+                    lineHeight: '1.8',
+                    transform: getLayerTransform(0.5),
+                    transition: 'transform 0.15s ease-out',
+                    willChange: 'transform',
+                  }}
                 >
                   PLATFORM &bull; CLOUD &bull; DEVOPS &bull; INFRASTRUCTURE
                 </div>
@@ -241,10 +329,10 @@ const VintageResume = () => {
               </h2>
               <p className="text-base leading-relaxed" style={{ color: '#444444' }}>
                 8 years of experience in Platform Engineering, Cloud Infrastructure, and DevOps.
-                Hands-on administrator of OpenShift, Azure Red Hat OpenShift (ARO), Kubernetes, and
-                VMware Tanzu platforms. Specialized in automating deployments, enforcing RBAC and
-                security governance, and maintaining highly reliable, compliant infrastructure in
-                regulated financial environments.
+                Production OpenShift and Azure Red Hat OpenShift (ARO) experience at Voya India,
+                with an active transition into Kubernetes through the CKA track. Specialized in
+                automating deployments, enforcing RBAC and security governance, and maintaining
+                highly reliable, compliant infrastructure in regulated financial environments.
               </p>
             </div>
 
@@ -506,6 +594,18 @@ const VintageResume = () => {
                   <span style={{ color: '#222222' }}>Marathi</span>
                   <span className="text-sm" style={{ color: '#888888' }}>Fluent</span>
                 </div>
+                <div className="flex justify-between items-center">
+                  <span style={{ color: '#222222' }}>Gujarati</span>
+                  <span className="text-sm" style={{ color: '#888888' }}>Learning</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span style={{ color: '#222222' }}>Kannada</span>
+                  <span className="text-sm" style={{ color: '#888888' }}>Learning</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span style={{ color: '#222222' }}>Telugu</span>
+                  <span className="text-sm" style={{ color: '#888888' }}>Learning</span>
+                </div>
               </div>
             </article>
           </div>
@@ -567,7 +667,7 @@ const VintageResume = () => {
         {/* Footer */}
         <footer className="mt-12 sm:mt-20 pt-8 border-t-2 border-gray-300 text-center" style={{ color: '#888888' }}>
           <p className="text-sm">
-            &copy; 2026 Mihir Sawant. OpenShift &amp; Kubernetes Platform Administrator.
+            &copy; 2026 Mihir Sawant. Cloud Infrastructure &amp; Platform Engineering.
           </p>
         </footer>
       </div>
