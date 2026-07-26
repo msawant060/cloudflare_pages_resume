@@ -3,5 +3,5 @@ compatibility_date = "2026-07-26"
 
 # Serve the static build output instead of running a Worker script
 [assets]
-directory = "./dist" # Change to "./build" if using Create React App instead of Vite
+directory = "./build" # Using Create React App build output
 not_found_handling = "single-page-application"
