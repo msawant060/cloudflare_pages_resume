@@ -2,6 +2,7 @@
   "name": "vintage-resume",
   "version": "1.0.0",
   "description": "Vintage newspaper-style resume with modern micro-interactions",
+  "homepage": "/",
   "private": true,
   "dependencies": {
     "react": "^18.2.0",
