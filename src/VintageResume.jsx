@@ -1,5 +1,4 @@
 import React, { useState, useRef } from 'react';
-import profilePic from './assets/profile.jpg';
 
 const VintageResume = () => {
   const [parallaxOffset, setParallaxOffset] = useState({ x: 0, y: 0 });
@@ -89,7 +88,7 @@ const VintageResume = () => {
               >
                 
                 <img
-                  src={profilePic}
+                  src="/profile.jpg"
                   alt="Mihir Sawant"
                   className="absolute inset-0 w-full h-full object-cover grayscale mix-blend-overlay z-0"
                 />
