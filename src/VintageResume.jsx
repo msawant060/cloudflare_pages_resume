@@ -74,11 +74,17 @@ const VintageResume = () => {
   const getLayerTransform = (depth) =>
     `translate3d(${parallaxOffset.x * depth}px, ${parallaxOffset.y * depth}px, 0)`;
 
+  const getTileParallaxStyle = (depth) => ({
+    transform: getLayerTransform(depth),
+    transition: 'transform 0.15s ease-out',
+    willChange: 'transform',
+  });
+
   const updateParallaxOffset = (clientX, clientY) => {
     if (!headerRef.current) return;
     const rect = headerRef.current.getBoundingClientRect();
-    const x = ((clientX - rect.left) / rect.width - 0.5) * MAX_MOTION_OFFSET;
-    const y = ((clientY - rect.top) / rect.height - 0.5) * MAX_MOTION_OFFSET;
+    const x = ((clientX - rect.left) / rect.width - 0.5) * MAX_MOTION_OFFSET * 2;
+    const y = ((clientY - rect.top) / rect.height - 0.5) * MAX_MOTION_OFFSET * 2;
     setParallaxOffset({ x: clampOffset(x), y: clampOffset(y) });
   };
 
@@ -281,7 +287,10 @@ const VintageResume = () => {
         <section className="mb-12 sm:mb-20 grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16">
           {/* Left: Profile image with monogram */}
           <div className="relative group">
-            <div className="relative overflow-hidden rounded-lg shadow-xl">
+            <div
+              className="relative overflow-hidden rounded-lg shadow-xl"
+              style={getTileParallaxStyle(0.8)}
+            >
               <div
                 className="aspect-square flex items-center justify-center relative"
                 style={{
@@ -390,6 +399,7 @@ const VintageResume = () => {
           <article
             className="rounded-lg border p-5 shadow-sm backdrop-blur-sm"
             style={{
+              ...getTileParallaxStyle(0.7),
               backgroundColor: 'rgba(255, 255, 255, 0.38)',
               borderColor: 'rgba(212, 175, 55, 0.45)',
             }}
@@ -405,6 +415,7 @@ const VintageResume = () => {
           <article
             className="rounded-lg border p-5 shadow-sm backdrop-blur-sm"
             style={{
+              ...getTileParallaxStyle(0.9),
               backgroundColor: 'rgba(255, 255, 255, 0.38)',
               borderColor: 'rgba(212, 175, 55, 0.45)',
             }}
@@ -420,6 +431,7 @@ const VintageResume = () => {
           <article
             className="rounded-lg border p-5 shadow-sm backdrop-blur-sm"
             style={{
+              ...getTileParallaxStyle(1.1),
               backgroundColor: 'rgba(255, 255, 255, 0.38)',
               borderColor: 'rgba(212, 175, 55, 0.45)',
             }}
@@ -618,11 +630,16 @@ const VintageResume = () => {
                 Core Competencies
               </h2>
               <div className="flex flex-wrap gap-3">
-                {skills.map((skill) => (
+                {skills.map((skill, index) => (
                   <span
                     key={skill}
                     className="rounded-full border px-3 py-2 text-sm font-medium"
-                    style={{ borderColor: 'rgba(212, 175, 55, 0.5)', backgroundColor: 'rgba(212, 175, 55, 0.08)', color: '#222222' }}
+                    style={{
+                      ...getTileParallaxStyle(0.5 + index * 0.08),
+                      borderColor: 'rgba(212, 175, 55, 0.5)',
+                      backgroundColor: 'rgba(212, 175, 55, 0.08)',
+                      color: '#222222',
+                    }}
                   >
                     {skill}
                   </span>
@@ -636,11 +653,12 @@ const VintageResume = () => {
                 Tools &amp; Platforms
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                {tools.map((tool) => (
+                {tools.map((tool, index) => (
                   <article
                     key={tool.name}
-                    className="group flex flex-col rounded-lg p-4 text-center transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1"
+                    className="group flex flex-col rounded-lg p-4 text-center hover:shadow-lg"
                     style={{
+                      ...getTileParallaxStyle(0.75 + index * 0.1),
                       backgroundColor: 'rgba(212, 175, 55, 0.08)',
                       border: '1px solid rgba(212, 175, 55, 0.3)',
                     }}
