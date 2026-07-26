@@ -79,24 +79,54 @@ const VintageResume = () => {
     setParallaxOffset({ x: 0, y: 0 });
   };
 
-  // Skills data
+  // Core competencies are presented as areas of practice, not subjective scores.
   const skills = [
-    { name: 'Platform Engineering', level: 9 },
-    { name: 'Kubernetes/OpenShift', level: 9 },
-    { name: 'Cloud Infrastructure', level: 8 },
-    { name: 'Infrastructure as Code', level: 9 },
-    { name: 'Observability', level: 8 },
-    { name: 'Platform Security', level: 8 },
+    'Platform Engineering',
+    'Kubernetes/OpenShift',
+    'Cloud Infrastructure',
+    'Infrastructure as Code',
+    'Observability',
+    'Platform Security',
   ];
 
-  // Tools data, now paired with real icon components (improvement #4)
+  // Source-backed operational metrics replace subjective proficiency scores.
   const tools = [
-    { name: 'Terraform', percentage: 95, Icon: Box },
-    { name: 'Helm', percentage: 90, Icon: Ship },
-    { name: 'Prometheus', percentage: 85, Icon: LineChart },
-    { name: 'Azure/AWS', percentage: 90, Icon: Cloud },
-    { name: 'Docker', percentage: 92, Icon: Container },
-    { name: 'Git/Bash', percentage: 95, Icon: Terminal },
+    {
+      name: 'OpenShift & ARO',
+      metricValue: '3.5+ Yrs',
+      source: 'Production experience at Voya India & Kotak Mahindra Bank',
+      Icon: Container,
+    },
+    {
+      name: 'Kubernetes',
+      metricValue: 'CKA Track',
+      source: 'Certified Kubernetes Administrator - In Progress',
+      Icon: Ship,
+    },
+    {
+      name: 'AWS Cloud Infrastructure',
+      metricValue: 'Certified',
+      source: 'AWS Solutions Architect Associate (2019)',
+      Icon: Cloud,
+    },
+    {
+      name: 'Terraform & IaC',
+      metricValue: '4+ Yrs',
+      source: 'Enterprise Azure & AWS automation pipelines',
+      Icon: Box,
+    },
+    {
+      name: 'VMware Tanzu / Cloud Foundry',
+      metricValue: '8 Yrs SME',
+      source: 'Capgemini STAR Award (Dec 2021)',
+      Icon: LineChart,
+    },
+    {
+      name: 'IT Service Governance',
+      metricValue: 'Certified',
+      source: 'ITIL 4 Foundation (2024)',
+      Icon: Terminal,
+    },
   ];
 
   return (
@@ -371,6 +401,22 @@ const VintageResume = () => {
                 </div>
                 <div>
                   <h3 className="font-bold text-lg" style={{ color: '#222222' }}>
+                    Higher Secondary Certificate
+                  </h3>
+                  <p className="text-sm" style={{ color: '#888888' }}>
+                    Sanjeevan, Panhala, Maharashtra &middot; 2013 - 2014
+                  </p>
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg" style={{ color: '#222222' }}>
+                    Secondary School Certificate
+                  </h3>
+                  <p className="text-sm" style={{ color: '#888888' }}>
+                    Don Bosco, Sindhudurg, Maharashtra &middot; 2011 - 2012
+                  </p>
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg" style={{ color: '#222222' }}>
                     Certifications
                   </h3>
                   <div className="mt-3 grid gap-3 sm:grid-cols-2">
@@ -471,31 +517,15 @@ const VintageResume = () => {
               <h2 className="text-sm font-bold tracking-widest mb-8 uppercase" style={{ color: '#222222' }}>
                 Core Competencies
               </h2>
-              <div className="space-y-6">
-                {skills.map((skill, idx) => (
-                  <div key={idx} className="group">
-                    <div className="flex justify-between items-center mb-2">
-                      <label className="text-sm font-medium" style={{ color: '#222222' }}>
-                        {skill.name}
-                      </label>
-                      <span
-                        className="text-xs font-bold transition-all duration-500 group-hover:text-yellow-600"
-                        style={{ color: '#d4af37' }}
-                      >
-                        {skill.level}/10
-                      </span>
-                    </div>
-                    <div className="relative h-2 bg-gray-300 rounded-full overflow-hidden">
-                      <div
-                        className="h-full rounded-full transition-all duration-700 ease-out"
-                        style={{
-                          width: `${skill.level * 10}%`,
-                          backgroundColor: '#d4af37',
-                          boxShadow: '0 0 10px rgba(212, 175, 55, 0.5)',
-                        }}
-                      />
-                    </div>
-                  </div>
+              <div className="flex flex-wrap gap-3">
+                {skills.map((skill) => (
+                  <span
+                    key={skill}
+                    className="rounded-full border px-3 py-2 text-sm font-medium"
+                    style={{ borderColor: 'rgba(212, 175, 55, 0.5)', backgroundColor: 'rgba(212, 175, 55, 0.08)', color: '#222222' }}
+                  >
+                    {skill}
+                  </span>
                 ))}
               </div>
             </section>
@@ -506,10 +536,10 @@ const VintageResume = () => {
                 Tools &amp; Platforms
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                {tools.map((tool, idx) => (
-                  <div
-                    key={idx}
-                    className="group p-4 rounded-lg text-center transition-all duration-300 hover:shadow-lg cursor-pointer transform hover:-translate-y-1"
+                {tools.map((tool) => (
+                  <article
+                    key={tool.name}
+                    className="group flex flex-col rounded-lg p-4 text-center transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1"
                     style={{
                       backgroundColor: 'rgba(212, 175, 55, 0.08)',
                       border: '1px solid rgba(212, 175, 55, 0.3)',
@@ -521,22 +551,13 @@ const VintageResume = () => {
                     <p className="text-xs font-bold mb-2" style={{ color: '#222222' }}>
                       {tool.name}
                     </p>
-                    <div className="relative h-1 bg-gray-200 rounded-full overflow-hidden">
-                      <div
-                        className="h-full rounded-full transition-all duration-700"
-                        style={{
-                          width: `${tool.percentage}%`,
-                          backgroundColor: '#d4af37',
-                        }}
-                      />
-                    </div>
-                    <p
-                      className="text-xs mt-2 font-semibold transition-all duration-300 group-hover:text-yellow-600"
-                      style={{ color: '#888888' }}
-                    >
-                      {tool.percentage}%
+                    <span className="mx-auto w-fit rounded-full border border-amber-300 bg-amber-100 px-2.5 py-1 text-xs font-bold text-amber-900">
+                      {tool.metricValue}
+                    </span>
+                    <p className="mt-3 text-[11px] leading-relaxed font-mono" style={{ color: '#6b6258' }}>
+                      {tool.source}
                     </p>
-                  </div>
+                  </article>
                 ))}
               </div>
             </section>
