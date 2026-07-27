@@ -217,6 +217,17 @@ const VintageResume = () => {
         </div>
       </section>
 
+      <a
+        href="https://wa.me/918928283513?text=Hi%20Mihir%2C%20I%20would%20like%20to%20connect."
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Start a WhatsApp chat with Mihir Sawant"
+        className="fixed bottom-5 right-5 z-40 inline-flex items-center gap-2 border-2 border-[#222222] bg-[#f2efe9] px-4 py-3 text-xs font-bold tracking-[0.12em] text-[#222222] shadow-[4px_4px_0_#d4af37] transition-all hover:-translate-y-0.5 hover:bg-[#222222] hover:text-[#f2efe9] focus:outline-none focus:ring-2 focus:ring-[#d4af37] focus:ring-offset-2"
+      >
+        <MessageCircle size={18} className="text-[#9a7711]" />
+        WHATSAPP
+      </a>
+
       {isMatchModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#222222]/55 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="match-jd-title">
           <form onSubmit={reviewMatch} className="w-full max-w-xl border-2 border-[#222222] bg-[#f2efe9] p-6 shadow-2xl sm:p-8">
